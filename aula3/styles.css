@@ -1,0 +1,12 @@
+body {
+  height: 100vh;
+}
+
+.dark-mode {
+  background-color: rgb(43, 43, 43);
+  height: 100vh;
+}
+
+.light-mode {
+  background-color: rgb(205, 205, 205);
+}
