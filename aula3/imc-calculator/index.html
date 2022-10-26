@@ -26,18 +26,20 @@
   </head>
   <body>
     <h1>My BMI Calculator</h1>
-    <form id="myForm">
-      <div class="row">
-        <div class="col-6">
+    <form id="myForm" class="container">
+      <div class="row justify-content-center">
+        <div class="col-6 text-center">
           <label>Weight: </label>
           <input class="weight-input-js" />
         </div>
-        <div class="col-6">
+        <div class="col-6 text-center">
           <label>Height: </label>
           <input class="height-input-js" />
         </div>
-        <button class="calc-imc-js" onclick="calculateIMC(event)">Calculate</button>
-        <div class="col-12 result-js"></div>
+        <button class="calc-imc-js col-5 mt-5" onclick="calculateIMC(event)">Calculate</button>
+        <div class="col-12 text-center">
+          <h2 class="result-js"></h2>
+        </div>
       </div>
     </form>
   </body>
