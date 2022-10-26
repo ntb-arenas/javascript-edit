@@ -21,20 +21,17 @@ function calculateIMC(event) {
     resultImc.innerHTML = `${imc} kg/m \u00B2`;
     resultMsg.innerHTML = "Normal weight";
     chartWrapper.setAttribute("class", "d-inline");
-    // iconWrapper.style.left = "-4rem";
     iconWrapper.style.left = `${imc + 8}rem`;
   } else if (imc <= 30) {
     resultImc.innerHTML = `${imc} kg/m \u00B2`;
     resultMsg.innerHTML = "Your result suggests you are overweight";
     chartWrapper.setAttribute("class", "d-inline");
-    // iconWrapper.style.left = "9rem";
     iconWrapper.style.left = `${imc + 12}rem`;
   } else {
     resultImc.innerHTML = `${imc} kg/m \u00B2`;
     resultMsg.innerHTML = "Your result suggests you are obese";
     chartWrapper.setAttribute("class", "d-inline");
-    // iconWrapper.style.left = "15rem";
-    iconWrapper.style.left = `${imc + 14}rem`;
+    iconWrapper.style.left = `${imc + 13}rem`;
   }
 }
 
