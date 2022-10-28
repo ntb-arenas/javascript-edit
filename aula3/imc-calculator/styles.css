@@ -39,3 +39,8 @@ body {
   left: 0;
   transition: all 0.3s ease-in-out;
 }
+
+.icon-chart {
+  position: relative;
+  left: 0;
+}
