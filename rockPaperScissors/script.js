@@ -112,3 +112,12 @@ function gameResult() {
     resultRound.innerHTML = "Computer won!";
   }
 }
+
+function reset() {
+  pScore = 0;
+  cScore = 0;
+  playerScoreDisplay.innerHTML = pScore;
+  computerScoreDisplay.innerHTML = cScore;
+  resultRound.innerHTML = "Choose your weapon. First to score 5 points wins the game";
+  isGameOver = false;
+}
