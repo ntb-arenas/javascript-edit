@@ -1,0 +1,8 @@
+.movies-content {
+  display: flex;
+}
+
+.movies-wrapper {
+  padding-left: 1rem;
+  font-size: 1.2rem;
+}
