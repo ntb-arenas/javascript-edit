@@ -1,21 +1,38 @@
-const movies = {
-  title: "Top Gun: Maverick",
-  genre: "Action/Adventure",
-  runningTime: "2h 11m",
-  language: "English",
-  country: "United States",
-  imgUrl: "topGunMav.jpg",
-  releaseDate: {
-    month: "May",
-    day: "27",
-    year: "2022",
-  },
-};
+//Funções
 
-document.querySelector(".title-js span").innerHTML = movies.title;
-document.querySelector(".genre-js span").innerHTML = movies.genre;
-document.querySelector(".runningTime-js span").innerHTML = movies.runningTime;
-document.querySelector(".language-js span").innerHTML = movies.language;
-document.querySelector(".country-js span").innerHTML = movies.country;
-document.querySelector("#movieImg").setAttribute("src", movies.imgUrl);
-document.querySelector(".releaseDate-js span").innerHTML = `${movies.releaseDate.month} ${movies.releaseDate.day}, ${movies.releaseDate.year}`;
+//Declaração
+//params fullName = "Francisco Brito", age = 33, city = "Lisboa"
+function displayText(fullName, age, city){
+    console.log(`${fullName}, age ${age}, city ${city}`)
+}
+
+//Execução
+displayText("Francisco Brito", 33, "Lisboa");
+
+let persons;
+
+// persons.forEach(person => {
+    
+// });
+
+//Objectos
+
+const person = {
+    fullName: "Francisco Brito",
+    age: 33,
+    city: "Lisboa",
+    height: 1.80,
+    weight: 90,
+    birthPlace: {
+        name: "Portugal",
+        city: {
+            address: "xpto",
+            year: 1989
+        }
+    }
+}
+
+// console.log(person.birthPlace.city.address);
+
+document.querySelector(".fullName-js span").innerHTML = person.fullName;
+document.querySelector(".age-js span").innerHTML = person.birthPlace.city.address.postalCode;
