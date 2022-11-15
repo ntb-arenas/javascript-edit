@@ -1,5 +1,6 @@
 const product = [
   {
+    sku: 1,
     name: "TV SAMSUNG QE55Q68BAUXXC (QLED - 55'' - 140 cm - 4K Ultra HD - Smart TV)",
     brand: "Samsung",
     price: 679.99,
@@ -7,6 +8,7 @@ const product = [
     discount: 15,
   },
   {
+    sku: 2,
     name: "iPad APPLE (10.2'' - 256 GB - Wi-Fi - Cinzento Sideral)",
     brand: "Apple",
     price: 499.99,
@@ -14,6 +16,7 @@ const product = [
     discount: 12,
   },
   {
+    sku: 3,
     name: "Máquina Fotográfica Reflex CANON EOS 6D Mark II (Full-Frame)",
     brand: "Canon",
     price: 999.99,
@@ -21,6 +24,7 @@ const product = [
     discount: 30,
   },
   {
+    sku: 4,
     name: "Impressora EPSON EcoTank ET-2810 (Multifunções - Jato de Tinta - Wi-Fi)",
     brand: "Epson",
     price: 179.99,
@@ -39,71 +43,100 @@ function displayTotal() {
   total.innerHTML = cart.total;
 }
 
-function displayCart(name) {
-  let listItem = document.createElement("li");
-  listItem.setAttribute("class", "mx-3");
-  listItem.style.fontSize = "10px";
+function displayCart(sku, productExist) {
+  if (!productExist) {
+    cart.products.find(function (prod) {
+      if (prod.sku === sku) {
+        const cartDiv = document.createElement("div");
+        cartDiv.setAttribute("class", "col-2");
 
-  listItem.innerHTML = `
-    <h2 class="fs-5">${name}</h2>
-    `;
+        cartDiv.innerHTML = `
+        <div class="w-100 h-100 d-flex flex-column justify-content-between align-items-start">
+        <div class="img-box mb-2">
+          <img src="${prod.imageUrl}" class="img-fluid" alt="" />
+        </div>
+        <h2 class="fs-custom">${prod.name}</h2>
+        <div class="prod-desc">
+          <p id="prod-quantity-${sku}">Quantity: ${prod.quantity}</p>
+          <p id="prod-price-${sku}">Price: <span>€${prod.price}</span></p>
+        </div>
+      </div>
+        `;
 
-  document.querySelector(".list-cart-js").appendChild(listItem);
+        document.querySelector("#cart").appendChild(cartDiv);
+      }
+    });
+  } else {
+    updateQuantityAndPrice(sku);
+  }
+}
+
+function updateQuantityAndPrice(sku) {
+  cart.products.find(function (prod) {
+    if (prod.sku === sku) {
+      let prodQuantity = document.querySelector(`#prod-quantity-${sku}`);
+      let prodPrice = document.querySelector(`#prod-price-${sku}`);
+
+      prodQuantity.innerHTML = `Quantity: ${prod.quantity}`;
+      prodPrice.innerHTML = `Price: <span>€${parseFloat((prod.price * prod.quantity).toFixed(2))}`;
+    }
+  });
 }
 
 function addToCart(event) {
+  let btnId = parseInt(event.target.id);
+
   product.forEach((element) => {
-    if (event.target.id === element.name) {
+    if (btnId === element.sku) {
       let productExist = false;
       let result = calcDiscount(element.price, element.discount);
 
       cart.products.find(function (prod) {
-        if (prod.name === element.name) {
+        if (prod.sku === element.sku) {
           productExist = true;
           prod.quantity += 1;
         }
       });
 
       if (!productExist) {
-        cart.products.push({ name: element.name, quantity: 1 });
-        displayCart(element.name);
+        cart.products.push({ sku: element.sku, name: element.name, imageUrl: element.imageUrl, price: result, quantity: 1 });
       }
+      displayCart(element.sku, productExist);
 
-      cart.total += result;
+      cart.total = parseFloat((cart.total + result).toFixed(2));
     }
   });
   displayTotal();
 }
 
 function calcDiscount(price, discount) {
-  let result = Math.floor(price * (1 - discount / 100));
-  return result;
+  let result = price * (1 - discount / 100);
+  return parseFloat(result.toFixed(2));
 }
 
 function displayProduct() {
   product.forEach((element) => {
-    let listItem = document.createElement("li");
-    listItem.setAttribute("class", "mx-3");
+    const productDiv = document.createElement("div");
+    productDiv.setAttribute("class", "col-3");
 
     let result = calcDiscount(element.price, element.discount);
 
-    listItem.innerHTML = `
-      <img src="${element.imageUrl}" class="img-fluid" alt="" />
+    productDiv.innerHTML = `
+    <div class="w-100 h-100 d-flex flex-column justify-content-between align-items-start">
+      <div class="img-box mb-2">
+        <img src="${element.imageUrl}" class="img-fluid" alt="" />
+      </div>
       <h2 class="fs-5">${element.name}</h2>
-      <p>Brand: ${element.brand}</p>
-      <p>Price: ${element.price}</p>
-      <p>Discount: ${element.discount}%</p>
-      <p>Total: ${result}€</p>
+      <div class="prod-desc">
+        <p>Brand: ${element.brand}</p>
+        <p>Discount: ${element.discount}%</p>
+        <p>Price: <span>€${result}</span> <sup><s>€${element.price}</s></sup></p>
+        <button class="px-2" id="${element.sku}" onclick="addToCart(event)">Adicionar</button>
+      </div>
+    </div>
       `;
 
-    let button = document.createElement("button");
-    button.innerHTML = "Add to Cart";
-    button.setAttribute("id", element.name);
-    button.setAttribute("onClick", "addToCart(event)");
-
-    listItem.appendChild(button);
-
-    document.querySelector("ul").appendChild(listItem);
+    document.querySelector("#product-list").appendChild(productDiv);
   });
 }
 
