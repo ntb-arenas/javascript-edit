@@ -31,16 +31,48 @@ const product = [
     imageUrl: "https://www.worten.pt/i/9ea4c9c1bd2cb3ad2c381b4f59d2d8364555fdce.jpg",
     discount: 10,
   },
+  {
+    sku: 5,
+    name: "Máquina de Café KRUPS Nespresso Essenza Mini XN1108P2 Preto",
+    brand: "Krups",
+    price: 116.99,
+    imageUrl: "https://www.worten.pt/i/4335b07165234775db12e671b2b68fc808b71938.jpg",
+    discount: 70,
+  },
+  {
+    sku: 6,
+    name: "Jogo de Tabuleiro DEVIR Catan (Idade Mínima: 10 - Nível Dificuldade: Intermédio)",
+    brand: "Devir",
+    price: 44.99,
+    imageUrl: "https://www.worten.pt/i/11f53174c49538f910f48724b604328f4ca1be5c.jpg",
+    discount: 36,
+  },
+  {
+    sku: 7,
+    name: "Monitor Gaming Curvo AOC C27G2ZE/BK (27'' - 0.5 ms - 240 Hz - FreeSync Premium)",
+    brand: "AOC",
+    price: 189.99,
+    imageUrl: "https://www.worten.pt/i/053ba04142bad0d3c05659eb8b034c8f5a9596d4.jpg",
+    discount: 0,
+  },
+  {
+    sku: 8,
+    name: "Aspirador Robô IROBOT Roomba i7158 (Autonomia 75 min - Cinza Carvão)",
+    brand: "IROBOT",
+    price: 679.99,
+    imageUrl: "https://www.worten.pt/i/6a180cbe24919a5ee46b0532d1d07ede8aa5d40e.jpg",
+    discount: 41,
+  },
 ];
 
-const cart = {
+let cart = {
   total: 0,
   products: [],
 };
 
 function displayTotal() {
   const total = document.querySelector(".total-js span");
-  total.innerHTML = cart.total;
+  total.innerHTML = `€${cart.total}`;
 }
 
 function displayCart(sku, productExist) {
@@ -101,11 +133,12 @@ function addToCart(event) {
       if (!productExist) {
         cart.products.push({ sku: element.sku, name: element.name, imageUrl: element.imageUrl, price: result, quantity: 1 });
       }
-      displayCart(element.sku, productExist);
 
+      displayCart(element.sku, productExist);
       cart.total = parseFloat((cart.total + result).toFixed(2));
     }
   });
+
   displayTotal();
 }
 
@@ -114,31 +147,52 @@ function calcDiscount(price, discount) {
   return parseFloat(result.toFixed(2));
 }
 
-function displayProduct() {
-  product.forEach((element) => {
-    const productDiv = document.createElement("div");
-    productDiv.setAttribute("class", "col-3");
+function displayProduct(product) {
+  setInterval;
+  const htmlString = product
+    .map((product) => {
+      let result = calcDiscount(product.price, product.discount);
 
-    let result = calcDiscount(element.price, element.discount);
+      return `
+        <div class="col-2 m-3"> 
+          <div class="w-100 h-100 d-flex flex-column justify-content-between align-items-start">
+            <div class="img-box mb-2">
+              <img src="${product.imageUrl}" class="img-fluid" alt="" />
+            </div>
+            <h2 class="fs-5">${product.name}</h2>
+            <div class="prod-desc">
+              <p>Brand: ${product.brand}</p>
+              <p>Discount: ${product.discount}%</p>
+              <p>Price: <span>€${result}</span> <sup><s>€${product.price}</s></sup></p>
+              <button class="px-2" id="${product.sku}" onclick="addToCart(event)">Adicionar</button>
+            </div>
+          </div>
+        </div>
+        `;
+    })
+    .join("");
 
-    productDiv.innerHTML = `
-    <div class="w-100 h-100 d-flex flex-column justify-content-between align-items-start">
-      <div class="img-box mb-2">
-        <img src="${element.imageUrl}" class="img-fluid" alt="" />
-      </div>
-      <h2 class="fs-5">${element.name}</h2>
-      <div class="prod-desc">
-        <p>Brand: ${element.brand}</p>
-        <p>Discount: ${element.discount}%</p>
-        <p>Price: <span>€${result}</span> <sup><s>€${element.price}</s></sup></p>
-        <button class="px-2" id="${element.sku}" onclick="addToCart(event)">Adicionar</button>
-      </div>
-    </div>
-      `;
-
-    document.querySelector("#product-list").appendChild(productDiv);
-  });
+  document.querySelector("#product-list").innerHTML = htmlString;
 }
 
-displayProduct();
+function resetCart() {
+  cart.total = 0;
+  cart.products = [];
+  document.querySelector("#cart").innerHTML = "";
+  document.querySelector(".total-js").innerHTML = `Total: €${cart.total}`;
+}
+
+const searchBar = document.querySelector("#search-bar");
+
+searchBar.addEventListener("keyup", (e) => {
+  const searchStr = e.target.value.toLowerCase();
+
+  const filteredProducts = product.filter((product) => {
+    return product.name.toLowerCase().includes(searchStr) || product.brand.toLowerCase().includes(searchStr);
+  });
+
+  displayProduct(filteredProducts);
+});
+
+displayProduct(product);
 displayTotal();
