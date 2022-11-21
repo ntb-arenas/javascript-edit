@@ -70,54 +70,48 @@ let cart = {
   products: [],
 };
 
-function displayTotal() {
-  const total = document.querySelector(".total-js span");
-  total.innerHTML = `€${cart.total}`;
-}
+function displayProduct(product) {
+  const htmlString = product
+    .map((product) => {
+      let result = calcDiscount(product.price, product.discount);
 
-function displayCart(sku, productExist) {
-  if (!productExist) {
-    cart.products.find(function (prod) {
-      if (prod.sku === sku) {
-        const cartDiv = document.createElement("div");
-        cartDiv.setAttribute("class", "col-2");
-
-        cartDiv.innerHTML = `
-        <div class="w-100 h-100 d-flex flex-column justify-content-between align-items-start">
-        <div class="img-box mb-2">
-          <img src="${prod.imageUrl}" class="img-fluid" alt="" />
+      return `
+        <div class="col-2 m-3"> 
+          <div class="w-100 h-100 d-flex flex-column justify-content-between align-items-start">
+            <div class="img-box mb-2">
+              <img src="${product.imageUrl}" class="img-fluid" alt="" />
+            </div>
+            <h2 class="fs-5">${product.name}</h2>
+            <div class="prod-desc">
+              <p>Brand: ${product.brand}</p>
+              <p>Discount: ${product.discount}%</p>
+              <p>Price: <span>€${result}</span> <sup><s>€${product.price}</s></sup></p>
+              <button class="px-2" onclick="addToCart(${product.sku})">Adicionar</button>
+            </div>
+          </div>
         </div>
-        <h2 class="fs-custom">${prod.name}</h2>
-        <div class="prod-desc">
-          <p id="prod-quantity-${sku}">Quantity: ${prod.quantity}</p>
-          <p id="prod-price-${sku}">Price: <span>€${prod.price}</span></p>
-        </div>
-      </div>
         `;
+    })
+    .join("");
 
-        document.querySelector("#cart").appendChild(cartDiv);
-      }
-    });
+  document.querySelector("#product-list").innerHTML = htmlString;
+  displayTotal();
+}
+
+function displayTotal(isAddSubtract) {
+  let result = calcDiscount(element.price, element.discount);
+
+  if (isAddSubtract === "subtract") {
+    cart.total = parseFloat((cart.total - result).toFixed(2));
   } else {
-    updateQuantityAndPrice(sku);
+    cart.total = parseFloat((cart.total + result).toFixed(2));
   }
+
+  const total = document.querySelector(".total-js");
+  total.innerHTML = `Total: €${cart.total}`;
 }
 
-function updateQuantityAndPrice(sku) {
-  cart.products.find(function (prod) {
-    if (prod.sku === sku) {
-      let prodQuantity = document.querySelector(`#prod-quantity-${sku}`);
-      let prodPrice = document.querySelector(`#prod-price-${sku}`);
-
-      prodQuantity.innerHTML = `Quantity: ${prod.quantity}`;
-      prodPrice.innerHTML = `Price: <span>€${parseFloat((prod.price * prod.quantity).toFixed(2))}`;
-    }
-  });
-}
-
-function addToCart(event) {
-  let btnId = parseInt(event.target.id);
-
+function addToCart(btnId) {
   product.forEach((element) => {
     if (btnId === element.sku) {
       let productExist = false;
@@ -142,37 +136,72 @@ function addToCart(event) {
   displayTotal();
 }
 
+function displayCart(sku, productExist) {
+  if (!productExist) {
+    cart.products.find(function (prod) {
+      if (prod.sku === sku) {
+        displayCartHtml(prod, sku);
+      }
+    });
+  } else {
+    updateQuantityAndPrice(sku);
+  }
+}
+
+function removeProdCart(sku) {
+  const removedProduct = cart.products.find(function (prod) {
+    return prod.sku === sku;
+  });
+
+  const indexProd = cart.products.indexOf(removedProduct);
+
+  cart.products.splice(indexProd, 1);
+
+  document.querySelector("#cart").innerHTML = "";
+
+  cart.products.forEach((prod) => {
+    displayCartHtml(prod, sku);
+  });
+
+  displayTotal("subtract");
+}
+
+function displayCartHtml(prod, sku) {
+  const cartDiv = document.createElement("div");
+  cartDiv.setAttribute("class", "row");
+
+  cartDiv.innerHTML = `
+      <div class="col-2">
+        <img src="${prod.imageUrl}" class="img-fluid" alt="" />
+      </div>
+      <div class="col-10">
+        <h2 class="fs-custom">${prod.name}</h2>
+        <div class="prod-desc">
+          <p class="m-0" id="prod-quantity-${sku}">Quantity: ${prod.quantity}</p>
+          <p class="m-0" id="prod-price-${sku}">Price: <span>€${prod.price}</span></p>
+          <button onclick="removeProdCart(${sku})">Remove</button>
+        </div>
+      </div>
+  `;
+
+  document.querySelector("#cart").appendChild(cartDiv);
+}
+
+function updateQuantityAndPrice(sku) {
+  cart.products.find(function (prod) {
+    if (prod.sku === sku) {
+      let prodQuantity = document.querySelector(`#prod-quantity-${sku}`);
+      let prodPrice = document.querySelector(`#prod-price-${sku}`);
+
+      prodQuantity.innerHTML = `Quantity: ${prod.quantity}`;
+      prodPrice.innerHTML = `Price: <span>€${parseFloat((prod.price * prod.quantity).toFixed(2))}`;
+    }
+  });
+}
+
 function calcDiscount(price, discount) {
   let result = price * (1 - discount / 100);
   return parseFloat(result.toFixed(2));
-}
-
-function displayProduct(product) {
-  setInterval;
-  const htmlString = product
-    .map((product) => {
-      let result = calcDiscount(product.price, product.discount);
-
-      return `
-        <div class="col-2 m-3"> 
-          <div class="w-100 h-100 d-flex flex-column justify-content-between align-items-start">
-            <div class="img-box mb-2">
-              <img src="${product.imageUrl}" class="img-fluid" alt="" />
-            </div>
-            <h2 class="fs-5">${product.name}</h2>
-            <div class="prod-desc">
-              <p>Brand: ${product.brand}</p>
-              <p>Discount: ${product.discount}%</p>
-              <p>Price: <span>€${result}</span> <sup><s>€${product.price}</s></sup></p>
-              <button class="px-2" id="${product.sku}" onclick="addToCart(event)">Adicionar</button>
-            </div>
-          </div>
-        </div>
-        `;
-    })
-    .join("");
-
-  document.querySelector("#product-list").innerHTML = htmlString;
 }
 
 function resetCart() {
@@ -184,8 +213,8 @@ function resetCart() {
 
 const searchBar = document.querySelector("#search-bar");
 
-searchBar.addEventListener("keyup", (e) => {
-  const searchStr = e.target.value.toLowerCase();
+searchBar.addEventListener("keyup", () => {
+  const searchStr = searchBar.value.toLowerCase();
 
   const filteredProducts = product.filter((product) => {
     return product.name.toLowerCase().includes(searchStr) || product.brand.toLowerCase().includes(searchStr);
@@ -195,4 +224,3 @@ searchBar.addEventListener("keyup", (e) => {
 });
 
 displayProduct(product);
-displayTotal();

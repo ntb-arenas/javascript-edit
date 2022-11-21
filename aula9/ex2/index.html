@@ -23,18 +23,25 @@
   <body>
     <h1 class="text-center">Loja</h1>
 
-    <div class="container">
+    <div class="container-fluid">
       <div class="text-center mb-4">
         <input type="text" id="search-bar" />
       </div>
-      <div class="row" id="product-list"></div>
+      <div class="row">
+        <div class="col-8">
+          <div class="row" id="product-list"></div>
+        </div>
+        <div class="col-4">
+          <h2 class="total-js"></h2>
+
+          <button class="px-2 mb-3" onclick="resetCart()">Clear cart</button>
+
+          <div class="row" id="cart"></div>
+        </div>
+      </div>
     </div>
 
-    <div class="container mt-5">
-      <h2 class="total-js">Total: <span></span></h2>
-      <button onclick="resetCart()">Clear cart</button>
-      <div class="row" id="cart"></div>
-    </div>
+    <div class="container mt-5"></div>
 
     <!-- JavaScript Bundle with Popper -->
     <script
